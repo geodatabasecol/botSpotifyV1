@@ -40,7 +40,9 @@ class BaseConexion():
         return driver
 
     def conexionChrome(self) :        
-        driver = webdriver.Chrome(chromedriver,options=self.options)
+        
+        driver = webdriver.Chrome("chromedriver",options=self.options)
+        
         return driver
 
 class BaseAcciones():

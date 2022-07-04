@@ -1,50 +1,55 @@
 # -*- coding: utf-8 -*-
+
+from os import access
 from PQTs.Selenium.Base import BaseAcciones
 
-from PQTs.Utilizar import urlNeverInstall
+from PQTs.Utilizar import urlSpotifysinginUS
 
 from selenium.common import exceptions
 from selenium.webdriver.common.by import By
 
 class Acciones(BaseAcciones):
 
-    def ingresarSitio(self):
-        self.ir(urlNeverInstall)
+    def ingresarSpotify(self):
+        self.ir(urlSpotifysinginUS)
 
-    def loginGoogle(self,cuenta,password):
-        xpathBotonGoogle = (By.XPATH,'//button[@id="googleLogin"]')
-        xpathElementoCarga = (By.XPATH,'//div[@class="load-inner"]')
+    def loginSpotify(self,cuenta,password):
+        xpathInputEmail = (By.ID,"login-username")
+        xpathInputPassword = (By.ID,"login-password")        
+        xpathBotonLogin= (By.ID,"login-button")
 
-        xpathInputCuenta = (By.XPATH,'//input[@id="identifierId"]')
-        xpathBotonCuenta = (By.XPATH,'//div[@id="identifierNext"]//button')
 
-        xpathInputPassword = (By.XPATH,'//div[@id="password"]//input')
-        xpathBotonPassword = (By.XPATH,'//div[@id="passwordNext"]//button')
 
-        visibleBotonGoogle = self.explicitWaitElementoVisibility(11,xpathBotonGoogle)
-        if visibleBotonGoogle:
+
+
+
+
+
+        visibleInputEmail = self.explicitWaitElementoVisibility(11,xpathInputEmail)
+        if visibleInputEmail:
+            self.escribir(xpathInputEmail,cuenta)
             
-            self.click(xpathBotonGoogle)
-            self.explicitWaitElementoInvisibility(11,xpathElementoCarga)
+            visibleInputPassword = self.explicitWaitElementoVisibility(11,xpathInputPassword)
+            if visibleInputPassword:
+                self.escribir(xpathInputPassword,password)
+                
 
-            visibleInputCuenta = self.explicitWaitElementoVisibility(11,xpathInputCuenta)
-            if visibleInputCuenta:
-                self.escribir(xpathInputCuenta,cuenta)
-                self.click(xpathBotonCuenta)
+                visibleBotonLogin = self.explicitWaitElementoVisibility(11,xpathBotonLogin)
+                if visibleBotonLogin:
+            
+                    self.click(xpathBotonLogin)
+                    self.explicitWaitElementoInvisibility(11,xpathBotonLogin)
 
-                visibleInputPassword = self.explicitWaitElementoVisibility(11,xpathInputPassword)
-                if visibleInputPassword:
-                    self.escribir(xpathInputPassword,password)
-                    self.click(xpathBotonPassword)
 
                     return True
-                
+
                 else:
-                    print(f"visibleInputPassword {visibleInputPassword}")
+                    print(f"visibleBotonGoogle {xpathBotonLogin}")
             else:
-                print(f"visibleInputCuenta {visibleInputCuenta}")
+                print(f"visibleInputPassword {visibleInputPassword}")
         else:
-            print(f"visibleBotonGoogle {visibleBotonGoogle}")
+            print(f"visibleInputCuenta {visibleInputEmail}")
+
 
     def esperarResumeApp(self):
 
