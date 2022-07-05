@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-
+#TESTTTTT
 from cmath import e
 import time
 from PQTs.MongoDB.MongoDB import MongoDB
 from PQTs.Selenium.Base import BaseConexion
-from PQTs.Selenium.Acciones.AccionesSingin import Acciones
+from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
 from threading import Thread, Barrier
 
 password='!asdf2021'
@@ -23,12 +23,12 @@ def accountsSpotify():
     for elemid in id:
         db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",2)
     db.cerrarConexion()
-    return email
-print (len(accountsSpotify()))
+    return email, id
 
-
+users, id= accountsSpotify()
+print (len(users))
     
-def iniciarSpotify(barrier,email,password,i):
+def iniciarSpotify(barrier,email,password,i,id):
 
 
     driver = BaseConexion().conexionChrome()
@@ -43,15 +43,27 @@ def iniciarSpotify(barrier,email,password,i):
     if returnLoginSpotify == True:
         print(f"Hilo {i} - SinginSpotify {returnLoginSpotify}")
 
-    time.sleep(120)
+    time.sleep(3)
+    driver.refresh()
+    time.sleep(3)
+    acciones.nuevalista()
+    time.sleep(2)
+    acciones.buscaryagregarartista()
+
+    db=MongoDB()
+    db.iniciarDB()
+    for elemid in id:
+        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",1)
+    db.cerrarConexion()
+    print (f"Account {i} listra de reproduccion de entrenamiento creada ok")
     # 
 
-users= accountsSpotify()
+
 barrier = Barrier(len(users))
 hiloscerrados = 0
 threads = []
 for i in range(len(users)):
-    i = Thread(target=iniciarSpotify, args=(barrier,users[i],password,i))
+    i = Thread(target=iniciarSpotify, args=(barrier,users[i],password,i,id[i]))
     i.start()
     threads.append(i)
 

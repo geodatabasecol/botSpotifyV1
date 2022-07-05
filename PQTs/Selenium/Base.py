@@ -32,11 +32,12 @@ class BaseConexion():
         self.options.add_argument('--disable-infobars')    
         self.options.add_argument("--incognito")   
         self.options.add_argument('--disable-gpu')
-        self.options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.options.add_experimental_option("excludeSwitches", ["enable-logging","enable-automation"])
 
     def conexionChromeHeadless(self) :
         self.options.add_argument("--headless")
         driver = webdriver.Chrome(options=self.options)
+        
         return driver
 
     def conexionChrome(self) :        
@@ -62,6 +63,11 @@ class BaseAcciones():
     def escribir(self, el, msj):
         self.findElement(el).send_keys(msj)
         self.sleep(1)
+    
+    def clear(self,el):
+         self.findElement(el).clear()
+        
+
 
     def maximizar(self):
         self.driver.maximize_window()
@@ -88,6 +94,7 @@ class BaseAcciones():
             return elemento
         except:
             return False
+    
 
     def explicitWaitElementoInvisibility(self,time,el):
         try:
