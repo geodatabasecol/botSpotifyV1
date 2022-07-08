@@ -1,37 +1,70 @@
 # -*- coding: utf-8 -*-
-
+import time
+from PQTs.MongoDB.MongoDB import MongoDB
 from PQTs.Selenium.Base import BaseConexion
-from PQTs.Selenium.Acciones.AccionesNeverInstall import Acciones
+from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
+from threading import Thread, Barrier
 
+password='!asdf2021'
+hilos=1
+def accountsSpotify():
 
-def iniciarNeverInstall():
+    id=[]
+    email =[]
+    
 
-    cuenta = 'azuresilk05@gmail.com'
-    password = 'fps91507856'
+    db=MongoDB(hilos)
+    db.iniciarDB()
+    for elem in (db.findby1("accountmanager","acc_estado",1)):
+        email.append(elem["email"])
+        id.append(elem["_id"])
+    for elemid in id:
+        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",2)
+    db.cerrarConexion()
+    return email, id
+
+users, id= accountsSpotify()
+print (len(users))
+    
+def iniciarSpotify(barrier,email,password,i,id):
+
 
     driver = BaseConexion().conexionChrome()
     #driver = BaseConexion().conexionChromeHeadless()
 
     acciones = Acciones(driver)
 
-    acciones.ingresarSitio()
-    returnLoginGoogle = acciones.loginGoogle(cuenta,password)
+    acciones.ingresarSpotify()
+    
+    returnLoginSpotify= acciones.loginSpotify(email,password)
 
-    if returnLoginGoogle == True:
-        returnResumeApp = acciones.esperarResumeApp()
-        if returnResumeApp == True:
-            
-            returnIniciarVsCode = acciones.iniciarVsCode()
-            if returnIniciarVsCode == True:
-                acciones.vscodeTab()
+    if returnLoginSpotify == True:
+        print(f"Hilo {i} - SinginSpotify {returnLoginSpotify}")
 
-            else:
-                print(f"returnIniciarVsCode {returnIniciarVsCode}")
+    time.sleep(3)
+    driver.refresh()
+    time.sleep(3)
+    acciones.nuevalista()
+    time.sleep(2)
+    acciones.buscaryagregarartista()
 
-    else:
-        print(f"returnLoginGoogle {returnLoginGoogle}")
-
+    db=MongoDB(hilos)
+    db.iniciarDB()
+    for elemid in id:
+        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",1)
+    db.cerrarConexion()
+    print (f"Account {i} lista de reproduccion de entrenamiento creada ok")
     # 
 
 
-iniciarNeverInstall()
+barrier = Barrier(len(users))
+hiloscerrados = 0
+threads = []
+for i in range(len(users)):
+    i = Thread(target=iniciarSpotify, args=(barrier,users[i],password,i,id[i]))
+    i.start()
+    threads.append(i)
+
+for i in threads:
+	i.join()
+ 

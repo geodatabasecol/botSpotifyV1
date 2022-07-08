@@ -8,14 +8,14 @@ from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
 from threading import Thread, Barrier
 
 password='!asdf2021'
-
+hilos=3
 def accountsSpotify():
 
     id=[]
     email =[]
     
 
-    db=MongoDB()
+    db=MongoDB(hilos)
     db.iniciarDB()
     for elem in (db.findby1("accountmanager","acc_estado",1)):
         email.append(elem["email"])
@@ -50,12 +50,12 @@ def iniciarSpotify(barrier,email,password,i,id):
     time.sleep(2)
     acciones.buscaryagregarartista()
 
-    db=MongoDB()
+    db=MongoDB(hilos)
     db.iniciarDB()
     for elemid in id:
         db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",1)
     db.cerrarConexion()
-    print (f"Account {i} listra de reproduccion de entrenamiento creada ok")
+    print (f"Account {i} lista de reproduccion de entrenamiento creada ok")
     # 
 
 

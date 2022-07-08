@@ -6,7 +6,8 @@ from PQTs.Utilizar import UrlDB, accountsDB
 
 class MongoDB:
     
-    def __init__(self):
+    def __init__(self,hilos=1):
+        self.hilos=hilos
         self.UrlDB = UrlDB
         self.Client = None
         self.DB = None
@@ -24,7 +25,7 @@ class MongoDB:
         self.DB[coleccion].insert_many(dato)
 
     def findby1(self,coleccion,clave, valor):
-        return list(self.DB[coleccion].find({clave:valor}).limit(1))
+        return list(self.DB[coleccion].find({clave:valor}).limit(self.hilos))
 
     def findby2(self,coleccion,clave1, valor1,clave2,valor2):
         return list(self.DB[coleccion].find({clave1:valor1},{clave2:valor2}))
