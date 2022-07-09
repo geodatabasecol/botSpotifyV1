@@ -33,8 +33,6 @@ class Acciones(BaseAcciones):
             
                     self.click(xpathBotonLogin)
                     self.explicitWaitElementoInvisibility(11,xpathBotonLogin)
-
-
                     return True
 
                 else:
@@ -78,36 +76,56 @@ class Acciones(BaseAcciones):
         '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div[2]/div/div/div[2]/div[3]/div/div[3]/button',
         '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div[2]/div/div/div[2]/div[4]/div/div[3]/button'
         ]]
-       
-        mylistartistas=random.sample(listartistas, 3)
-        print (mylistartistas)
+        miscanciones=[
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[1]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[2]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[3]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[4]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[5]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[6]/div/div[3]/button',
+        '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[7]/div/div[3]/button'
+        ]
+
+
+        mylistartistas=random.sample(listartistas, 4)
+        mylistartistas.append("SilkLipsMusicX")
+        mylistartistaok=random.sample(mylistartistas, 5)
+        mylistartistaok.append("SilkLipsMusicX")
+        mylistartistaok1=random.sample(mylistartistaok, 6)
+        print (mylistartistaok1)
         
         xpathbuscarartista=(By.XPATH,'//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/section/div/div/input')
-                
+        xpathalbumSilkLipsMusic=(By.XPATH,'//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/div/section/div[2]/div[3]/div/div/div/div[2]/div[1]/div/div[1]/div/p[1]')
+
+
         visiblebuscarartista= self.explicitWaitElementoVisibility(1200,xpathbuscarartista)
         if visiblebuscarartista:
             
-            for  elem in mylistartistas:
-                self.clear(xpathbuscarartista)
-                self.escribir(xpathbuscarartista,elem)
-                time.sleep(5)
-                print('Click nueva lista')
-                it=0
-                for item in itemsagregar[it]:
-                    xpathcancion=(By.XPATH,item )
-                    self.click(xpathcancion)
-                    print("cancion agregada")
+            for  elem in mylistartistaok1:
+                if elem =='SilkLipsMusicX':
                     time.sleep(5)
-                    it+=1
+                    self.click(xpathalbumSilkLipsMusic)
+                    time.sleep(3)
+                    cancion=random.sample(miscanciones, 2)
+                    xpathcancion=(By.XPATH,cancion[0] )
+                    self.click(xpathcancion)
+                    time.sleep(3)
+                    xpathcancion=(By.XPATH,cancion[1] )
+                    self.click(xpathcancion)                   
+                    
+
+                else:
+                    self.clear(xpathbuscarartista)
+                    self.escribir(xpathbuscarartista,elem)
+                    time.sleep(5)
+                    print('Click nueva lista')
+                    it=0
+                    for item in itemsagregar[it]:
+                        xpathcancion=(By.XPATH,item )
+                        self.click(xpathcancion)
+                        print("cancion agregada")
+                        time.sleep(5)
+                        it+=1
         
         else:
             print(f"visibleNuevalista {visiblebuscarartista}")
-
-
-        
-
-      
-        
-
-
-    

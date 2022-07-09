@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #TESTTTTT
-from cmath import e
+
 import time
 from PQTs.MongoDB.MongoDB import MongoDB
 from PQTs.Selenium.Base import BaseConexion
@@ -8,7 +8,7 @@ from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
 from threading import Thread, Barrier
 
 password='!asdf2021'
-hilos=3
+hilos=2
 def accountsSpotify():
 
     id=[]
@@ -35,9 +35,12 @@ def iniciarSpotify(barrier,email,password,i,id):
     #driver = BaseConexion().conexionChromeHeadless()
 
     acciones = Acciones(driver)
+    try:
+        acciones.ingresarSpotify()
+    except:
+        acciones.reload()
+        acciones.ingresarSpotify()
 
-    acciones.ingresarSpotify()
-    
     returnLoginSpotify= acciones.loginSpotify(email,password)
 
     if returnLoginSpotify == True:
@@ -71,3 +74,5 @@ for i in threads:
 	i.join()
  
 #iniciarSpotify()
+
+

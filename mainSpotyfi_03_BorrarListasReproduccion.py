@@ -6,7 +6,7 @@ from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
 from threading import Thread, Barrier
 
 password='!asdf2021'
-hilos=1
+hilos=6
 def accountsSpotify():
 
     id=[]
@@ -15,12 +15,10 @@ def accountsSpotify():
 
     db=MongoDB(hilos)
     db.iniciarDB()
-    for elem in (db.findby1("accountmanager","acc_estado",1)):
+    for elem in (db.findby1("accountmanager","creacionlistasentrenamiento",2)):
+       
         email.append(elem["email"])
         id.append(elem["_id"])
-    for elemid in id:
-        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",2)
-    db.cerrarConexion()
     return email, id
 
 users, id= accountsSpotify()
@@ -43,17 +41,18 @@ def iniciarSpotify(barrier,email,password,i,id):
 
     time.sleep(3)
     driver.refresh()
-    time.sleep(3)
+    time.sleep(20)
+    '''
     acciones.nuevalista()
     time.sleep(2)
     acciones.buscaryagregarartista()
-
+    '''
     db=MongoDB(hilos)
     db.iniciarDB()
-    for elemid in id:
-        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",1)
+    
+    db.updateOne("accountmanager",id,"creacionlistasentrenamiento",0)
     db.cerrarConexion()
-    print (f"Account {i} lista de reproduccion de entrenamiento creada ok")
+    print (f"Account {i} lista de reproduccion eliminada")
     # 
 
 
