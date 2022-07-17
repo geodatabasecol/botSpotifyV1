@@ -28,8 +28,8 @@ class MongoDB:
         return list(self.DB[coleccion].find({clave:valor}).limit(self.hilos))
 
     def findby2(self,coleccion,clave1, valor1,clave2,valor2):
-        return list(self.DB[coleccion].find({clave1:valor1},{clave2:valor2}).limit(self.hilos))
-
+        return list(self.DB[coleccion].find({"$and": [{clave1: valor1}, {clave2: valor2}]}).limit(self.hilos))
+        
 
     def updateOne(self,coleccion,id,clave,valor):
         self.DB[coleccion].update_one({"_id":id},{"$set":{clave:valor}})

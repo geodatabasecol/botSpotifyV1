@@ -8,7 +8,7 @@ from PQTs.Selenium.Acciones.AccionesSinginSpotify import Acciones
 from threading import Thread, Barrier
 
 password='!asdf2021'
-hilos=2
+hilos=1
 def accountsSpotify():
 
     id=[]
@@ -23,12 +23,12 @@ def accountsSpotify():
     for elemid in id:
         db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",2)
     db.cerrarConexion()
-    return email, id
+    return email, id, db
 
-users, id= accountsSpotify()
+users, id,db= accountsSpotify()
 print (len(users))
     
-def iniciarSpotify(barrier,email,password,i,id):
+def iniciarSpotify(barrier,email,password,i,id,db):
 
 
     driver = BaseConexion().conexionChrome()
@@ -36,27 +36,37 @@ def iniciarSpotify(barrier,email,password,i,id):
 
     acciones = Acciones(driver)
     try:
-        acciones.ingresarSpotify()
+        ingresando=acciones.ingresarSpotify()
     except:
-        acciones.reload()
-        acciones.ingresarSpotify()
+        ingresando=acciones.ingresarSpotify()
 
+    while ingresando==False:
+        try:
+            ingresando=acciones.ingresarSpotify()
+        except:
+            ingresando=acciones.ingresarSpotify()
+
+    
     returnLoginSpotify= acciones.loginSpotify(email,password)
-
+    while returnLoginSpotify== False:
+        returnLoginSpotify= acciones.loginSpotify(email,password)
+    
+    
     if returnLoginSpotify == True:
         print(f"Hilo {i} - SinginSpotify {returnLoginSpotify}")
 
-    time.sleep(3)
-    driver.refresh()
-    time.sleep(3)
+    acciones.sleep(3)
+    acciones.refreshweb()
+    acciones.sleep(3)
+    #acciones.executeScript("document.body.style.zoom='50%'")
+    acciones.sleep(3)
     acciones.nuevalista()
-    time.sleep(2)
+    acciones.sleep(3)
     acciones.buscaryagregarartista()
 
-    db=MongoDB(hilos)
+    
     db.iniciarDB()
-    for elemid in id:
-        db.updateOne("accountmanager",elemid,"creacionlistasentrenamiento",1)
+    db.updateOne("accountmanager",id,"creacionlistasentrenamiento",1)
     db.cerrarConexion()
     print (f"Account {i} lista de reproduccion de entrenamiento creada ok")
     # 
@@ -66,7 +76,7 @@ barrier = Barrier(len(users))
 hiloscerrados = 0
 threads = []
 for i in range(len(users)):
-    i = Thread(target=iniciarSpotify, args=(barrier,users[i],password,i,id[i]))
+    i = Thread(target=iniciarSpotify, args=(barrier,users[i],password,i,id[i],db))
     i.start()
     threads.append(i)
 

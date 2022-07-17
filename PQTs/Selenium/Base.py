@@ -5,6 +5,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 
 import os
@@ -60,13 +62,33 @@ class BaseAcciones():
         elemento = self.driver.find_element(*el)
         return elemento
 
+    def selecionarlista(self, el,valor):
+        el.select_by_value("US")
+         
+
     def escribir(self, el, msj):
         self.findElement(el).send_keys(msj)
         self.sleep(1)
+
+    def pagedown(self, el):
+        self.sleep(1)        
+        self.findElement(el).send_keys(Keys.PAGE_DOWN)
+        self.sleep(1)  
     
+    def pagedown(self, el):
+        self.sleep(1)        
+        self.findElement(el).send_keys(Keys.PAGE_UP)
+        self.sleep(1)  
+
     def clear(self,el):
          self.findElement(el).clear()
         
+    def refreshweb(self):
+        self.driver.refresh()
+
+    def ubicarscroll(self,el):
+         self.findElement(el).location_once_scrolled_into_view
+
 
 
     def maximizar(self):
